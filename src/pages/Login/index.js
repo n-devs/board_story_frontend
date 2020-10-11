@@ -100,22 +100,22 @@ export default function SignIn() {
   }
 
   function ActiveLogin() {
-    // TwinBcrypt.hash(values.password, function (hash) {
-    //   console.log(hash);
-
-    socket.emit('login', {
-      email: values.email,
-      password: values.password
+    TwinBcrypt.hash(values.password, function (hash) {
+      console.log(hash);
     })
+      socket.emit('login', {
+        email: values.email,
+        password: values.password
+      })
 
-    socket.on('login', (data) => {
-      setAlert(data)
-      if(data.severity === "success") {
-        sessionStorage.setItem('auth',true)
-        sessionStorage.setItem('token',data.token)
-        window.location.replace('/')
-      }
-    })
+      socket.on('login', (data) => {
+        setAlert(data)
+        if (data.severity === "success") {
+          sessionStorage.setItem('auth', true)
+          sessionStorage.setItem('token', data.token)
+          window.location.replace('/')
+        }
+      })
     // })
   }
 

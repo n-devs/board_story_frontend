@@ -6,18 +6,20 @@ import {
   Switch,
   Route,
   Link,
+  Redirect,
   useParams,
   useRouteMatch
 } from "react-router-dom";
 import { PrivateRoute } from '@bsf/routes'
-import { Home, Login, Admin } from '@bsf/pages'
+import { Home, Login, Admin, CreateBlog, UpdateBlog, Watch } from '@bsf/pages'
 import socketIOClient from 'socket.io-client'
 
 function App() {
   const [auth, setAuth] = React.useState(false)
   const [endpoint] = React.useState("http://localhost:9000")
   const socket = socketIOClient(endpoint)
-
+  // const { url } = useRouteMatch();
+  // const { id} = useParams()
 
 
   React.useEffect(() => {
@@ -26,23 +28,46 @@ function App() {
     socket.on('dashboard', (data) => {
       setAuth(data.status)
     })
-  })
+  },[])
 
   return (
     <Router>
       <Switch>
         <Route exact={true} path="/">
-        {auth ? (<Admin status={auth} />) : (<Home status={auth} />)}
+          {auth ? (<Admin status={auth} />) : (<Home status={auth} />)}
 
         </Route>
-        <Route path="/login">
-          <Login />
+
+        {/* <PrivateRoute exact={true} path={`/${"id"}`} status={auth}>
+
+          <Switch>
+            <Route exact={true} path="/" >
+              {auth ? (<Admin status={auth} />) : (<Home status={auth} />)}
+            </Route>
+            <Route path="/create-blog" >
+              <CreateBlog></CreateBlog>
+            </Route>
+          </Switch>
+        </PrivateRoute> */}
+        <Route path="/create-blog" >
+          {auth ? (<CreateBlog></CreateBlog>) : (<Redirect to="/login"></Redirect>)}
+
         </Route>
-        <PrivateRoute path={`/${"id"}`} status={auth}>
-          {/* <Admin status={auth} /> */}
-           {auth ? (<Admin status={auth} />) : (<Home status={auth} />)}
-        </PrivateRoute>
+
+        <Route path="/login">
+          {auth ? (<Redirect to="/"></Redirect>) : (<Login />)}
+        </Route>
+
+        <Route path={`/blog/watch/:id`}>
+          <Watch status={auth}></Watch>
+        </Route>
+        <Route path={`/blog/update/:id`}>
+          {auth ? (<UpdateBlog ></UpdateBlog>) : (<Redirect to="/login"></Redirect>)}
+
+        </Route>
+
       </Switch>
+
     </Router>
   );
 }

@@ -5,3 +5,5 @@ export {default as ShearchRegion } from './ShearchRegion';
 export {default as ShearchProvince } from './ShearchProvince';
 export {default as ShearchName } from './ShearchName';
 export {default as MediaCard } from './MediaCard';
+export {default as Editors } from './Editors';
+export {default as FullScreenDialog } from './FullScreenDialog';

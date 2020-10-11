@@ -3,11 +3,14 @@ import { Header, ShearchName, Swipeable, ShearchProvince, MediaCard } from '@bsf
 import { Grid, Paper, Box, Container, Button, Typography } from '@material-ui/core';
 import Skeleton from '@material-ui/lab/Skeleton';
 import { useHistory } from "react-router-dom";
-
+import socketIOClient from 'socket.io-client'
+import TextField from '@material-ui/core/TextField';
 
 function Admin(props) {
-
-
+    const [endpoint] = React.useState("http://localhost:9000")
+    const socket = socketIOClient(endpoint)
+    const [data, setData] = React.useState(null)
+    const [value, setValue] = React.useState('');
 
     let history = useHistory();
 
@@ -25,7 +28,35 @@ function Admin(props) {
         history.push("/");
     }
 
+    const handleChange = (event) => {
+        setValue(event.target.value);
 
+        if (event.target.value === "") {
+            socket.emit('get_all_blog', data)
+
+            socket.on('get_all_blog', (_data) => {
+                // console.log(_data);
+                setData(_data)
+            })
+        } else {
+            socket.emit('search_blog', event.target.value)
+
+            socket.on('search_blog', (_data) => {
+                // console.log(_data);
+                setData(_data)
+            })
+        }
+    };
+
+
+    React.useEffect(() => {
+        socket.emit('get_all_blog', data)
+
+        socket.on('get_all_blog', (_data) => {
+            console.log(_data);
+            setData(_data)
+        })
+    },[])
 
     return (
         <Container>
@@ -95,20 +126,30 @@ function Admin(props) {
                                 <div style={{
                                     padding: 10
                                 }}>
-                                    <ShearchName></ShearchName>
+                                    <TextField
+                                        id="standard-search"
+                                        label="ค้นหา"
+                                        multiline
+                                        rowsMax={4}
+                                        value={value}
+                                        onChange={handleChange}
+                                    />
                                 </div>
 
                             </Grid>
                         </Grid>
-                        {/* 
-                        <Grid item xs style={{
-                            display: 'contents'
-                        }}>
-                            <Box my={2}>
 
-                                <MediaCard></MediaCard>
-                            </Box>
-                        </Grid> */}
+                        {data !== null ? data.map((_data, index) => (
+                            <Grid key={index} item xs style={{
+                                display: 'contents'
+                            }}>
+                                <Box my={2}>
+
+                                    <MediaCard status={true} {..._data}></MediaCard>
+                                </Box>
+                            </Grid>
+                        )):(<React.Fragment></React.Fragment>)}
+
 
                     </Grid>
                 </Paper>

@@ -11,33 +11,6 @@ import { autoPlay } from 'react-swipeable-views-utils';
 
 const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
 
-const tutorialSteps = [
-    {
-        label: 'San Francisco – Oakland Bay Bridge, United States',
-        imgPath:
-            'https://images.unsplash.com/photo-1537944434965-cf4679d1a598?auto=format&fit=crop&w=400&h=250&q=60',
-    },
-    {
-        label: 'Bird',
-        imgPath:
-            'https://images.unsplash.com/photo-1538032746644-0212e812a9e7?auto=format&fit=crop&w=400&h=250&q=60',
-    },
-    {
-        label: 'Bali, Indonesia',
-        imgPath:
-            'https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=400&h=250&q=80',
-    },
-    {
-        label: 'NeONBRAND Digital Marketing, Las Vegas, United States',
-        imgPath:
-            'https://images.unsplash.com/photo-1518732714860-b62714ce0c59?auto=format&fit=crop&w=400&h=250&q=60',
-    },
-    {
-        label: 'Goč, Serbia',
-        imgPath:
-            'https://images.unsplash.com/photo-1512341689857-198e7e2f3ca8?auto=format&fit=crop&w=400&h=250&q=60',
-    },
-];
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -64,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-function Swipeable() {
+function Swipeable(props) {
     const classes = useStyles();
     const theme = useTheme();
     const [activeStep, setActiveStep] = React.useState(0);
@@ -95,7 +68,7 @@ function Swipeable() {
                     letterSpacing: '0em',
                     color:"#fff",
                     padding: 10
-                }}>{tutorialSteps[activeStep].label}</Typography>
+                }}>{props.imgSteps[activeStep].label}</Typography>
             </Paper>
             <AutoPlaySwipeableViews
                 style={{
@@ -106,7 +79,7 @@ function Swipeable() {
                 onChangeIndex={handleStepChange}
                 enableMouseEvents
             >
-                {tutorialSteps.map((step, index) => (
+                {props.imgSteps.map((step, index) => (
                     <div key={step.label} style={{
                         borderRadius: 5
                     }}>

@@ -2,9 +2,9 @@ import React from 'react';
 import { Header, ShearchName, Swipeable, ShearchProvince, MediaCard } from '@bsf/components';
 import { Grid, Paper, Box, Container, Button, Typography } from '@material-ui/core';
 import Skeleton from '@material-ui/lab/Skeleton';
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
+import ReactMarkdown from 'react-markdown/with-html'
 import socketIOClient from 'socket.io-client'
-import TextField from '@material-ui/core/TextField';
 
 const tutorialSteps = [
     {
@@ -36,12 +36,18 @@ const tutorialSteps = [
 
 
 
-function Home(props) {
+function Watch(props) {
+    let { id } = useParams();
     const [endpoint] = React.useState("http://localhost:9000")
     const socket = socketIOClient(endpoint)
-    const [data, setData] = React.useState(null)
-    const [value, setValue] = React.useState('');
-
+    const [code, setCode] = React.useState("");
+    const [data, setData] = React.useState({
+        label: "",
+        region: "",
+        county: "",
+        detail: "",
+        imgPath: ""
+    });
     let history = useHistory();
 
     function partToLogin() {
@@ -58,33 +64,22 @@ function Home(props) {
         history.push("/");
     }
 
-    const handleChange = (event) => {
-        setValue(event.target.value);
-
-        if (event.target.value === "") {
-            socket.emit('get_all_blog', data)
-
-            socket.on('get_all_blog', (_data) => {
-                // console.log(_data);
-                setData(_data)
-            })
-        } else {
-            socket.emit('search_blog', event.target.value)
-
-            socket.on('search_blog', (_data) => {
-                // console.log(_data);
-                setData(_data)
-            })
-        }
-    };
-
     React.useEffect(() => {
-        socket.emit('get_all_blog', data)
+        console.log('id', id);
+        socket.emit('get_id_blog', id)
 
-        socket.on('get_all_blog', (_data) => {
-            // console.log(_data);
-            setData(_data)
+        socket.on('get_id_blog', (_data) => {
+            setData({
+                label: _data.title,
+                region: _data.region,
+                county: _data.county,
+                detail: _data.detail,
+                imgPath: _data.cover
+            })
+            setCode(_data.data)
+            // window.location.replace('/')
         })
+
     }, [])
 
     return (
@@ -127,67 +122,32 @@ function Home(props) {
                 display: 'flex',
                 justifyContent: 'center',
             }}>
-                <Swipeable imgSteps={tutorialSteps}></Swipeable>
+                <Swipeable imgSteps={[data]}></Swipeable>
             </Box>
 
             <Box my={2}>
                 <Paper style={{
                     padding: 20,
-                    display: 'flex',
-                    justifyContent: 'center',
+                    
+                    margin:'20px 0px',
+                    // display: 'flex',
+                    // justifyContent: 'center',
                 }}>
-                    <Grid
-                        container
-                        direction="column"
-                        justify="center"
-                        alignItems="center"
-
-                        spacing={3}
-                    >
-                        <Grid item xs
-                            container
-                            direction="column"
-                            justify="center"
-                            alignItems="center"
-                            style={{
-                                display: 'contents'
-                            }}>
-                            <Grid item xs >
-                                <div style={{
-                                    padding: 10
-                                }}>
-                                    <TextField
-                                        id="standard-search"
-                                        label="ค้นหา"
-                                        multiline
-                                        rowsMax={4}
-                                        value={value}
-                                        onChange={handleChange}
-                                    />
-                                </div>
-
-                            </Grid>
-                        </Grid>
-
-
-                        {data !== null ? data.map((_data, index) => (
-                            <Grid key={index} item xs style={{
-                                display: 'contents'
-                            }}>
-                                <Box my={2}>
-
-                                    <MediaCard status={false} {..._data}></MediaCard>
-                                </Box>
-                            </Grid>
-                        )) : (<React.Fragment></React.Fragment>)}
-
-
-
-                    </Grid>
+                    <h3>ชื่อ: {data.label}</h3>
+                    <h3>ภูมมิภาค: {data.region}</h3>
+                    <h3>จังหวัด: {data.county}</h3>
+                    <h3>รายละเอียด: {data.detail}</h3>
+                </Paper>
+                <Paper style={{
+                    padding: 20,
+                    // display: 'flex',
+                    // justifyContent: 'center',
+                }}>
+                    <ReactMarkdown source={code} escapeHtml={false}></ReactMarkdown>
                 </Paper>
             </Box>
         </Container>
     )
 }
 
-export default Home;
+export default Watch;
