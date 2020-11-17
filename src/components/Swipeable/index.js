@@ -41,6 +41,7 @@ function Swipeable(props) {
     const classes = useStyles();
     const theme = useTheme();
     const [activeStep, setActiveStep] = React.useState(0);
+    const [imgSteps, setImgSteps] = React.useState(props.imgSteps ? props.imgSteps : null)
     //   const maxSteps = tutorialSteps.length;
 
     //   const handleNext = () => {
@@ -55,6 +56,10 @@ function Swipeable(props) {
         setActiveStep(step);
     };
 
+    React.useEffect(() => {
+        setImgSteps(props.imgSteps)
+    })
+
     return (
         <div className={classes.root}>
             <Paper square elevation={0} className={classes.header}>
@@ -66,9 +71,9 @@ function Swipeable(props) {
                     fontWeight: 400,
                     lineHeight: 1.167,
                     letterSpacing: '0em',
-                    color:"#fff",
+                    color: "#fff",
                     padding: 10
-                }}>{props.imgSteps[activeStep].label}</Typography>
+                }}>{imgSteps ? imgSteps[activeStep].label : (<React.Fragment></React.Fragment>)}</Typography>
             </Paper>
             <AutoPlaySwipeableViews
                 style={{
@@ -79,7 +84,7 @@ function Swipeable(props) {
                 onChangeIndex={handleStepChange}
                 enableMouseEvents
             >
-                {props.imgSteps.map((step, index) => (
+                {imgSteps ? imgSteps.map((step, index) => (
                     <div key={step.label} style={{
                         borderRadius: 5
                     }}>
@@ -87,7 +92,7 @@ function Swipeable(props) {
                             <img className={classes.img} src={step.imgPath} alt={step.label} />
                         ) : null}
                     </div>
-                ))}
+                )) : (<React.Fragment></React.Fragment>)}
             </AutoPlaySwipeableViews>
             {/* <MobileStepper
         steps={maxSteps}

@@ -50,16 +50,19 @@ function Watch(props) {
     });
     let history = useHistory();
 
+    // ฟังก์ชัน ไปหน้า ลงชื่อเข้าใช้ 
     function partToLogin() {
         history.push("/login");
     }
 
+    // ฟังก์ชัน ลงชื่อออก 
     function ActiveLogout() {
         sessionStorage.removeItem('token')
         sessionStorage.removeItem('auth')
         window.location.replace('/')
     }
 
+    // ฟังก์ชัน ไปหน้า home 
     function partToHome() {
         history.push("/");
     }
@@ -77,7 +80,6 @@ function Watch(props) {
                 imgPath: _data.cover
             })
             setCode(_data.data)
-            // window.location.replace('/')
         })
 
     }, [])
@@ -93,12 +95,6 @@ function Watch(props) {
                     spacing={3}
 
                 >
-                    {/* <Grid item xs style={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                    }}>
-                        <Typography>Title</Typography>
-                    </Grid> */}
                     <Grid item xs style={{
                         display: 'flex',
                         justifyContent: 'flex-start',
@@ -130,8 +126,6 @@ function Watch(props) {
                     padding: 20,
                     
                     margin:'20px 0px',
-                    // display: 'flex',
-                    // justifyContent: 'center',
                 }}>
                     <h3>ชื่อ: {data.label}</h3>
                     <h3>ภูมมิภาค: {data.region}</h3>
@@ -140,8 +134,6 @@ function Watch(props) {
                 </Paper>
                 <Paper style={{
                     padding: 20,
-                    // display: 'flex',
-                    // justifyContent: 'center',
                 }}>
                     <ReactMarkdown source={code} escapeHtml={false}></ReactMarkdown>
                 </Paper>

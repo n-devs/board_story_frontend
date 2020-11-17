@@ -88,16 +88,17 @@ export default function CreateBlog(props) {
         setValue(index);
     };
 
+    // อัปเดตโค๊ด
     const handleChangeCode = (prop) => (event) => {
         setData({ ...data, [prop]: event.target.value });
     };
 
     function handleEditorDidMount(_valueGetter) {
-        // setIsEditorReady(true);
         valueGetter.current = _valueGetter;
 
     }
 
+    // อัปเดตโค๊ด
     function update() {
         setCode(valueGetter.current())
     }
@@ -110,9 +111,12 @@ export default function CreateBlog(props) {
         })
     }
 
+    // ฟังก์ชัน บันทึกข้อมูลลง database
     function save() {
         socket.emit('create_blog', {
             title: data.title,
+            region: data.region,
+            county: data.county,
             detail: data.detail,
             cover: data.img,
             data: valueGetter.current()
@@ -172,14 +176,13 @@ export default function CreateBlog(props) {
                                 onChangeIndex={handleChangeIndex}
                             >
                                 <TabPanel value={value} index={0} dir={theme.direction}>
-                                    {/* <button onClick={handleShowValue}>show</button> */}
+                                    {/* แก้ไขโค๊ด */}
                                     <Editor
                                         height="90vh" // By default, it fully fits with its parent
                                         theme="dark"
                                         language="html"
                                         value={code}
                                         editorDidMount={handleEditorDidMount}
-                                        // editorDidMount={true}
                                         loading={"Loading..."}
                                     />
                                 </TabPanel>
@@ -189,7 +192,6 @@ export default function CreateBlog(props) {
                             </SwipeableViews>
                         </div>
                     </Grid>
-                    {/* </Paper> */}
                 </Grid>
             </Container>
             <Snackbar open={alert.open} autoHideDuration={6000} onClose={handleClose}>

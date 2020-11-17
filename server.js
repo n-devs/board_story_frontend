@@ -143,9 +143,9 @@ function GetAll() {
 function Search(find) {
     let promise = new Promise(async (resolve, reject) => {
         await connection.query(`SELECT * FROM blogs 
-        WHERE blogs.title LIKE '${find}' 
-        OR blogs.region LIKE '${find}'
-        OR blogs.county LIKE '${find}'`, (err, res) => {
+        WHERE blogs.title LIKE '%${find}%' 
+        OR blogs.region LIKE '%${find}%'
+        OR blogs.county LIKE '%${find}%'`, (err, res) => {
             // console.log(res);
             if (err) {
                 reject({
@@ -215,6 +215,30 @@ function Update(find, newData) {
     return promise
 }
 
+function Remove(find) {
+    console.log('remove id',find);
+    const find_keys = Object.keys(find);
+    const find_values =Object.values(find)
+    let promise = new Promise(async (resolve, reject) => {
+        await connection.query(`DELETE FROM blogs WHERE ${find_keys[0]} = ?`, find_values[0], (err, res) => {
+            if (err) {
+                reject({
+                    open: true,
+                    msg: "error get blog all",
+                    severity: "error"
+                })
+            }
+            resolve({
+                open: true,
+                msg: "ลบบทความเสร็จสิ้น",
+                severity: "success"
+            })
+
+        })
+    })
+
+    return promise
+}
 
 io.on('connection', (socket) => {
 
@@ -266,6 +290,15 @@ io.on('connection', (socket) => {
             socket.emit('get_id_blog', _data);
         }, _err => {
             socket.emit('get_id_blog', _err);
+        })
+
+    })
+
+    socket.on('remove_id_blog', (id) => {
+        Remove(id).then(_data => {
+            socket.emit('remove_id_blog', _data);
+        }, _err => {
+            socket.emit('remove_id_blog', _err);
         })
 
     })

@@ -6,7 +6,7 @@ import { useHistory } from "react-router-dom";
 import socketIOClient from 'socket.io-client'
 import TextField from '@material-ui/core/TextField';
 
-const tutorialSteps = [
+const tutorialStepss = [
     {
         label: 'San Francisco – Oakland Bay Bridge, United States',
         imgPath:
@@ -41,23 +41,26 @@ function Home(props) {
     const socket = socketIOClient(endpoint)
     const [data, setData] = React.useState(null)
     const [value, setValue] = React.useState('');
-
+    const [tutorialSteps, setTutorialSteps] = React.useState(null)
     let history = useHistory();
 
+    // ฟังก์ชัน ลงชื่อเข้าใช้
     function partToLogin() {
         history.push("/login");
     }
-
+    // ฟังก์ชัน ลงชื่อออก
     function ActiveLogout() {
         sessionStorage.removeItem('token')
         sessionStorage.removeItem('auth')
         window.location.replace('/')
     }
 
+    // ฟังก์ชัน ไปหน้า home
     function partToHome() {
         history.push("/");
     }
 
+    // ฟังก์ชัน ค้นหา
     const handleChange = (event) => {
         setValue(event.target.value);
 
@@ -65,14 +68,15 @@ function Home(props) {
             socket.emit('get_all_blog', data)
 
             socket.on('get_all_blog', (_data) => {
-                // console.log(_data);
+
                 setData(_data)
+
+
             })
         } else {
             socket.emit('search_blog', event.target.value)
 
             socket.on('search_blog', (_data) => {
-                // console.log(_data);
                 setData(_data)
             })
         }
@@ -84,6 +88,14 @@ function Home(props) {
         socket.on('get_all_blog', (_data) => {
             // console.log(_data);
             setData(_data)
+            const Steps = []
+            _data.map(step => {
+                Steps.push({
+                    label: step.title,
+                    imgPath: step.cover
+                })
+                setTutorialSteps(Steps)
+            })
         })
     }, [])
 
@@ -98,12 +110,6 @@ function Home(props) {
                     spacing={3}
 
                 >
-                    {/* <Grid item xs style={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                    }}>
-                        <Typography>Title</Typography>
-                    </Grid> */}
                     <Grid item xs style={{
                         display: 'flex',
                         justifyContent: 'flex-start',
@@ -127,7 +133,7 @@ function Home(props) {
                 display: 'flex',
                 justifyContent: 'center',
             }}>
-                <Swipeable imgSteps={tutorialSteps}></Swipeable>
+                <Swipeable imgSteps={tutorialSteps ? tutorialSteps : tutorialStepss}></Swipeable>
             </Box>
 
             <Box my={2}>
@@ -169,7 +175,7 @@ function Home(props) {
                             </Grid>
                         </Grid>
 
-
+                        {/* การ์ด ข้อมูล อุทยานต่างๆ */}
                         {data !== null ? data.map((_data, index) => (
                             <Grid key={index} item xs style={{
                                 display: 'contents'
@@ -180,8 +186,6 @@ function Home(props) {
                                 </Box>
                             </Grid>
                         )) : (<React.Fragment></React.Fragment>)}
-
-
 
                     </Grid>
                 </Paper>

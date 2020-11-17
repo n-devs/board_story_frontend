@@ -4,6 +4,8 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
+// เชื่อมต่อกับ html
+
 ReactDOM.render(
   <React.StrictMode>
     <App />

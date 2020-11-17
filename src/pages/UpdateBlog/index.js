@@ -60,6 +60,7 @@ function Alert(props) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
+//  หน้า แก้ไขบทความ
 export default function UpdateBlog(props) {
     const classes = useStyles();
     const theme = useTheme();
@@ -100,6 +101,7 @@ export default function UpdateBlog(props) {
 
     }
 
+    // ฟังก์ชัน อัปเดตโค๊ด
     function update() {
         setCode(valueGetter.current())
     }
@@ -112,6 +114,7 @@ export default function UpdateBlog(props) {
         })
     }
 
+    // ฟังก์ชัน บันทึกข้อมูลลง database 
     function save() {
         socket.emit('update_blog', { id: id }, {
             title: data.title,
@@ -120,7 +123,6 @@ export default function UpdateBlog(props) {
             county: data.county,
             cover: data.img,
             data: valueGetter.current()
-
         })
 
         socket.on('update_blog', (data) => {
@@ -142,7 +144,6 @@ export default function UpdateBlog(props) {
                 img: _data.cover
             })
             setCode(_data.data)
-            // window.location.replace('/')
         })
 
     }, [])
@@ -156,7 +157,6 @@ export default function UpdateBlog(props) {
                     alignItems="center"
                     spacing={3}
                 >
-                    {/* <Paper> */}
                     <Grid item xs={12}>
                         <TextField id="link-image" label="ลิ้งภาพ (ภาพหน้าปก)" value={data.img} onChange={handleChangeCode("img")} />
                     </Grid>
@@ -195,14 +195,12 @@ export default function UpdateBlog(props) {
                                 onChangeIndex={handleChangeIndex}
                             >
                                 <TabPanel value={value} index={0} dir={theme.direction}>
-                                    {/* <button onClick={handleShowValue}>show</button> */}
                                     <Editor
                                         height="90vh" // By default, it fully fits with its parent
                                         theme="dark"
                                         language="html"
                                         value={code}
                                         editorDidMount={handleEditorDidMount}
-                                        // editorDidMount={true}
                                         loading={"Loading..."}
                                     />
                                 </TabPanel>
@@ -212,7 +210,6 @@ export default function UpdateBlog(props) {
                             </SwipeableViews>
                         </div>
                     </Grid>
-                    {/* </Paper> */}
                 </Grid>
             </Container>
             <Snackbar open={alert.open} autoHideDuration={6000} onClose={handleClose}>

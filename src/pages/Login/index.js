@@ -51,6 +51,7 @@ function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
+// หน้า ลงชื่อเข้าใช้
 export default function SignIn() {
   const classes = useStyles();
   const [endpoint] = React.useState("http://localhost:9000")
@@ -71,10 +72,11 @@ export default function SignIn() {
 
   let history = useHistory();
 
+  // ฟังก์ชัน ไปหน้า ลงชื่อเข้าใช้
   function partToLogin() {
     history.push("/login");
   }
-
+ // ฟังก์ชัน ไปหน้า home
   function partToHome() {
     history.push("/");
   }
@@ -83,10 +85,12 @@ export default function SignIn() {
     setValues({ ...values, [prop]: event.target.value });
   };
 
+   // ฟังก์ชัน ดู password
   const handleClickShowPassword = () => {
     setValues({ ...values, showPassword: !values.showPassword });
   };
 
+  
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
@@ -99,29 +103,25 @@ export default function SignIn() {
     })
   }
 
+   // ฟังก์ชัน ตรวจสอบการลงชื่อเข้าใช้งาน
   function ActiveLogin() {
     TwinBcrypt.hash(values.password, function (hash) {
       console.log(hash);
     })
-      socket.emit('login', {
-        email: values.email,
-        password: values.password
-      })
+    socket.emit('login', {
+      email: values.email,
+      password: values.password
+    })
 
-      socket.on('login', (data) => {
-        setAlert(data)
-        if (data.severity === "success") {
-          sessionStorage.setItem('auth', true)
-          sessionStorage.setItem('token', data.token)
-          window.location.replace('/')
-        }
-      })
-    // })
+    socket.on('login', (data) => {
+      setAlert(data)
+      if (data.severity === "success") {
+        sessionStorage.setItem('auth', true)
+        sessionStorage.setItem('token', data.token)
+        window.location.replace('/')
+      }
+    })
   }
-
-  // React.useEffect(() => {
-
-  // },[])
 
   return (
     <Container >
@@ -134,12 +134,6 @@ export default function SignIn() {
           spacing={3}
 
         >
-          {/* <Grid item xs style={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                    }}>
-                        <Typography>Title</Typography>
-                    </Grid> */}
           <Grid item xs style={{
             display: 'flex',
             justifyContent: 'flex-start',
@@ -174,18 +168,6 @@ export default function SignIn() {
               type={values.showemail ? 'text' : 'email'}
               value={values.email}
               onChange={handleChange('email')}
-              // endAdornment={
-              //   <InputAdornment position="end">
-              //     <IconButton
-              //       aria-label="toggle password visibility"
-              //       onClick={handleClickShowPassword}
-              //       onMouseDown={handleMouseDownPassword}
-              //       edge="end"
-              //     >
-              //       {values.showPassword ? <Visibility /> : <VisibilityOff />}
-              //     </IconButton>
-              //   </InputAdornment>
-              // }
               labelWidth={70}
             />
           </FormControl>
@@ -211,10 +193,6 @@ export default function SignIn() {
               labelWidth={70}
             />
           </FormControl>
-          {/* <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-            /> */}
           <Button
             type="submit"
             fullWidth
@@ -225,22 +203,7 @@ export default function SignIn() {
           >
             Sign In
           </Button>
-          {/* <Grid container>
-              <Grid item xs>
-                <Link href="#" variant="body2">
-                  Forgot password?
-              </Link>
-              </Grid>
-              <Grid item>
-                <Link href="#" variant="body2">
-                  {"Don't have an account? Sign Up"}
-                </Link>
-              </Grid>
-            </Grid> */}
         </div>
-        {/* <Box mt={8}>
-          <Copyright />
-        </Box> */}
       </Container  >
       <Snackbar open={alert.open} autoHideDuration={6000} onClose={handleClose}>
         <Alert onClose={handleClose} severity={alert.severity}>

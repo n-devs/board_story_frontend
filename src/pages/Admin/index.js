@@ -6,6 +6,7 @@ import { useHistory } from "react-router-dom";
 import socketIOClient from 'socket.io-client'
 import TextField from '@material-ui/core/TextField';
 
+// page สำหรับการจัดการ
 function Admin(props) {
     const [endpoint] = React.useState("http://localhost:9000")
     const socket = socketIOClient(endpoint)
@@ -14,20 +15,25 @@ function Admin(props) {
 
     let history = useHistory();
 
+    // ฟังก์ชัน ไปหน้า สร้าง blog
     function partToCreateBlog() {
         history.push("/create-blog");
     }
 
+    // ฟังก์ชัน ลงชื่อออก
     function ActiveLogout() {
+
         sessionStorage.removeItem('token')
         sessionStorage.removeItem('auth')
         window.location.replace('/')
     }
 
+    // ฟังก์ชัน ไปหน้า home
     function partToHome() {
         history.push("/");
     }
 
+    // ฟังก์ชัน ค้นหา
     const handleChange = (event) => {
         setValue(event.target.value);
 
@@ -56,7 +62,7 @@ function Admin(props) {
             console.log(_data);
             setData(_data)
         })
-    },[])
+    }, [])
 
     return (
         <Container>
@@ -69,22 +75,18 @@ function Admin(props) {
                     spacing={3}
 
                 >
-                    {/* <Grid item xs style={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                    }}>
-                        <Typography>Title</Typography>
-                    </Grid> */}
                     <Grid item xs style={{
                         display: 'flex',
                         justifyContent: 'flex-start',
                     }}>
+                        {/* ปุ่ม ไปหน้า home */}
                         <Button color="inherit" onClick={partToHome}>Home</Button>
                     </Grid>
                     <Grid item xs style={{
                         display: 'flex',
                         justifyContent: 'flex-end',
                     }}>
+                        {/* ปุ่ม ลงชื่อออก */}
                         <Button color="inherit" onClick={ActiveLogout}>Logout</Button>
 
                     </Grid>
@@ -98,6 +100,7 @@ function Admin(props) {
                 display: 'flex',
                 justifyContent: ' flex-end',
             }}>
+                {/* ปุ่ม สร้างบทความ */}
                 <Button onClick={partToCreateBlog} variant="contained" color="primary">สร้างบทความ</Button>
             </Box>
             <Box my={2}>
@@ -126,6 +129,8 @@ function Admin(props) {
                                 <div style={{
                                     padding: 10
                                 }}>
+
+                                    {/* input ค้นหา */}
                                     <TextField
                                         id="standard-search"
                                         label="ค้นหา"
@@ -139,6 +144,7 @@ function Admin(props) {
                             </Grid>
                         </Grid>
 
+                        {/* การ์ด ข้อมูล อุทยานต่างๆ */}
                         {data !== null ? data.map((_data, index) => (
                             <Grid key={index} item xs style={{
                                 display: 'contents'
@@ -148,9 +154,7 @@ function Admin(props) {
                                     <MediaCard status={true} {..._data}></MediaCard>
                                 </Box>
                             </Grid>
-                        )):(<React.Fragment></React.Fragment>)}
-
-
+                        )) : (<React.Fragment></React.Fragment>)}
                     </Grid>
                 </Paper>
             </Box>

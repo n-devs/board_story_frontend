@@ -18,18 +18,19 @@ function App() {
   const [auth, setAuth] = React.useState(false)
   const [endpoint] = React.useState("http://localhost:9000")
   const socket = socketIOClient(endpoint)
-  // const { url } = useRouteMatch();
-  // const { id} = useParams()
 
 
   React.useEffect(() => {
+
+    // ตรวจสอบการลงชื่อเข้าใช้งาน
     socket.emit('dashboard', sessionStorage.getItem('token'))
 
     socket.on('dashboard', (data) => {
       setAuth(data.status)
     })
-  },[])
+  }, [])
 
+  // เชื่อมต่อ pages
   return (
     <Router>
       <Switch>
@@ -37,18 +38,6 @@ function App() {
           {auth ? (<Admin status={auth} />) : (<Home status={auth} />)}
 
         </Route>
-
-        {/* <PrivateRoute exact={true} path={`/${"id"}`} status={auth}>
-
-          <Switch>
-            <Route exact={true} path="/" >
-              {auth ? (<Admin status={auth} />) : (<Home status={auth} />)}
-            </Route>
-            <Route path="/create-blog" >
-              <CreateBlog></CreateBlog>
-            </Route>
-          </Switch>
-        </PrivateRoute> */}
         <Route path="/create-blog" >
           {auth ? (<CreateBlog></CreateBlog>) : (<Redirect to="/login"></Redirect>)}
 
